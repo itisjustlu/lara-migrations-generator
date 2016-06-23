@@ -7,7 +7,7 @@ If you have a previous database, and you want to import to laravel, this is the 
 This package will import all of your tables, column with their respectives foreign keys.
 
 ### How to install?
-The only thing you need to do is adding the following code to **app/Console/Kernel.php** inside
+All you have to do is add the following code to **app/Console/Kernel.php** inside
 the **protected $commands** var
 ```
 \LucasRuroken\LaraMigrationsGenerator\Commands\LaraMigrationsGeneratorCommand::class,
