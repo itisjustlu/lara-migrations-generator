@@ -1,4 +1,4 @@
-#Laravel migrations generators
+#Laravel migrations generator
 
 ##Available for Laravel 5.2
 
