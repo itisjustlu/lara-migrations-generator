@@ -5,8 +5,8 @@ namespace LucasRuroken\LaraMigrationsGenerator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class Migrate {
-    
+class Migrate
+{
     /**
      * @var array
      */
@@ -15,7 +15,7 @@ class Migrate {
     /**
      * @var string
      */
-    private static $database = "";
+    private static $database = '';
 
     /**
      * @var bool
@@ -40,7 +40,7 @@ class Migrate {
     /**
      * @var string
      */
-    private static $up = "";
+    private static $up = '';
 
     /**
      * @var string
@@ -50,8 +50,8 @@ class Migrate {
     /**
      * @return mixed
      */
-    private static function getTables() {
-
+    private static function getTables()
+    {
         return DB::select('SELECT table_name FROM information_schema.tables WHERE table_schema="' . self::$database . '"');
     }
 
@@ -59,8 +59,8 @@ class Migrate {
      * @param $table
      * @return mixed
      */
-    private static function getTableDescribes($table) {
-
+    private static function getTableDescribes($table)
+    {
         return DB::table('information_schema.columns')
             ->where('table_schema', '=', self::$database)
             ->where('table_name', '=', $table)
@@ -70,8 +70,8 @@ class Migrate {
     /**
      * @return mixed
      */
-    private static function getForeignTables() {
-
+    private static function getForeignTables()
+    {
         return DB::table('information_schema.KEY_COLUMN_USAGE')
             ->where('CONSTRAINT_SCHEMA', '=', self::$database)
             ->where('REFERENCED_TABLE_SCHEMA', '=', self::$database)
@@ -83,8 +83,8 @@ class Migrate {
      * @param $table
      * @return mixed
      */
-    private static function getForeigns($table) {
-
+    private static function getForeigns($table)
+    {
         return DB::table('information_schema.KEY_COLUMN_USAGE')
             ->where('CONSTRAINT_SCHEMA', '=', self::$database)
             ->where('REFERENCED_TABLE_SCHEMA', '=', self::$database)
@@ -96,15 +96,16 @@ class Migrate {
     /**
      * @return string
      */
-    private static function compileSchema() {
-
+    private static function compileSchema()
+    {
         $upSchema = "";
         $downSchema = "";
         $newSchema = "";
 
-        foreach (self::$schema as $name => $values) {
-
-            if (in_array($name, self::$ignore)) {
+        foreach (self::$schema as $name => $values)
+        {
+            if (in_array($name, self::$ignore))
+            {
                 continue;
             }
 
@@ -121,14 +122,16 @@ class Migrate {
         use Illuminate\Database\Schema\Blueprint;
         use Illuminate\Database\Migrations\Migration;
  
-        class Create" . str_replace('_', '', Str::title(self::$database)) . "Database extends Migration {
-         
-            public function up() {
+        class Create" . str_replace('_', '', Str::title(self::$database)) . "Database extends Migration 
+        {
+            public function up() 
+            {
                 " . $upSchema . "
                 " . self::$up . "
             }
             
-            public function down() {
+            public function down() 
+            {
                 " . $downSchema . "
                 " . self::$down . "
             }
@@ -141,8 +144,8 @@ class Migrate {
      * @param $up
      * @return mixed
      */
-    public function up($up) {
-
+    public function up($up)
+    {
         self::$up = $up;
         return self::$instance;
     }
@@ -151,8 +154,8 @@ class Migrate {
      * @param $down
      * @return mixed
      */
-    public function down($down) {
-
+    public function down($down)
+    {
         self::$down = $down;
         return self::$instance;
     }
@@ -161,8 +164,8 @@ class Migrate {
      * @param $tables
      * @return mixed
      */
-    public function ignore($tables) {
-
+    public function ignore($tables)
+    {
         self::$ignore = array_merge($tables, self::$ignore);
         return self::$instance;
     }
@@ -170,8 +173,8 @@ class Migrate {
     /**
      * @return mixed
      */
-    public function migrations() {
-
+    public function migrations()
+    {
         self::$migrations = true;
         return self::$instance;
     }
@@ -179,8 +182,8 @@ class Migrate {
     /**
      *
      */
-    public function write() {
-
+    public function write()
+    {
         $schema = self::compileSchema();
         $filename = date('Y_m_d_His') . "_create_" . self::$database . "_database";
 
@@ -197,36 +200,36 @@ class Migrate {
     /**
      * @return string
      */
-    public function get() {
-
+    public function get()
+    {
         return self::compileSchema();
     }
 
     /**
      * @param $database
-     * @return SqlMigrations
+     * @return Migrate
      */
-    public function convert($database) {
-
+    public function convert($database)
+    {
         self::$instance = new self();
         self::$database = $database;
 
         $table_headers = array('Field', 'Type', 'Null', 'Key', 'Default', 'Extra');
         $tables = self::getTables();
 
-        foreach ($tables as $key => $value) {
-
-            if (in_array($value->table_name, self::$ignore)) {
-                continue;
+        foreach ($tables as $key => $value)
+        {
+            if (in_array($value->table_name, self::$ignore))
+            {continue;
             }
 
             $down = "Schema::drop('{$value->table_name}');";
-            $up = "Schema::create('{$value->table_name}', function(Blueprint $" . "table) {\n";
-
+            $up = "Schema::create('{$value->table_name}', function(Blueprint $" . "table) 
+            {\n";
             $tableDescribes = self::getTableDescribes($value->table_name);
 
-            foreach ($tableDescribes as $values) {
-
+            foreach ($tableDescribes as $values)
+            {
                 $method = "";
                 $para = strpos($values->Type, '(');
                 $type = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
@@ -236,7 +239,8 @@ class Migrate {
                 $unsigned = strpos($values->Type, "unsigned") === false ? '' : '->unsigned()';
                 $unique = $values->Key == 'UNI' ? "->unique()" : "";
 
-                switch ($type) {
+                switch ($type)
+                {
                     case 'int' :
                         $method = 'unsignedInteger';
                         break;
@@ -277,8 +281,8 @@ class Migrate {
                         break;
                 }
 
-                if ($values->Key == 'PRI') {
-
+                if ($values->Key == 'PRI')
+                {
                     $method = 'increments';
                 }
 
@@ -294,15 +298,17 @@ class Migrate {
 
         $tableForeigns = self::getForeignTables();
 
-        if (sizeof($tableForeigns) !== 0) {
+        if (sizeof($tableForeigns) !== 0)
+        {
+            foreach ($tableForeigns as $key => $value)
+            {
+                $up = "Schema::table('{$value->TABLE_NAME}', function($" . "table) 
+                {\n";
 
-            foreach ($tableForeigns as $key => $value) {
-
-                $up = "Schema::table('{$value->TABLE_NAME}', function($" . "table) {\n";
                 $foreign = self::getForeigns($value->TABLE_NAME);
 
-                foreach ($foreign as $k => $v) {
-
+                foreach ($foreign as $k => $v)
+                {
                     $up .= " $" . "table->foreign('{$v->COLUMN_NAME}')->references('{$v->REFERENCED_COLUMN_NAME}')->on('{$v->REFERENCED_TABLE_NAME}');\n";
                 }
 
@@ -314,6 +320,7 @@ class Migrate {
                 );
             }
         }
+
         return self::$instance;
     }
 }

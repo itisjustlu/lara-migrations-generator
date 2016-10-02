@@ -13,7 +13,7 @@ class LaraMigrationsGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:migrations:from-mysql';
+    protected $signature = 'generate:migrations:mysql';
 
     /**
      * The console command description.
@@ -38,8 +38,8 @@ class LaraMigrationsGeneratorCommand extends Command
      */
     public function handle()
     {
-        try{
-            
+        try
+        {
             $migrate = new Migrate();
             $migrate->ignore([]);
             $migrate->convert(env('DB_DATABASE'));
@@ -47,10 +47,9 @@ class LaraMigrationsGeneratorCommand extends Command
 
             $this->info('Database import successful');
         }
-        catch(\Exception $e){
-            
+        catch(\Exception $e)
+        {
             $this->info('An error has occurred, please try again');
         }
-        
     }
 }
