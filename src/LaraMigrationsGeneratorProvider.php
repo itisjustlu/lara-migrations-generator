@@ -24,11 +24,6 @@ class LaraMigrationsGeneratorProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->singleton('command.generate:migrations:mysql', function($app) {
-
-            return new LaraMigrationsGeneratorCommand();
-        });
-
-        $this->commands('generate:migrations:mysql');
+        $this->commands(LaraMigrationsGeneratorCommand::class);
     }
 }
